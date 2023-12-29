@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	log.Println("sysprot use darwin")
+	log.Println("sysproxy use darwin")
 }
 
 func SetIgnore(ignores []string) error {

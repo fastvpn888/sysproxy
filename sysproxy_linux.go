@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	log.Println("sysprot use linux")
+	log.Println("sysproxy use linux")
 }
 
 func SetIgnore(ignores []string) error {

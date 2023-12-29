@@ -17,7 +17,7 @@ import (
 )
 
 func init() {
-	log.Println("sysprot use windows")
+	log.Println("sysproxy use windows")
 }
 
 func SetIgnore(ignores []string) error {
