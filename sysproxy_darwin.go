@@ -19,6 +19,19 @@ func init() {
 	log.Println("sysproxy use darwin")
 }
 
+func OffAll() error {
+	if err := OffHttps(); err != nil {
+		return err
+	}
+	if err := OffHttp(); err != nil {
+		return err
+	}
+	if err := OffSocks(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func SetIgnore(ignores []string) error {
 	s, err := getNetworkInterface()
 	if err != nil {

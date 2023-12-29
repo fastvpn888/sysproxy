@@ -20,6 +20,19 @@ func init() {
 	log.Println("sysproxy use windows")
 }
 
+func OffAll() error {
+	if err := OffHttps(); err != nil {
+		return err
+	}
+	if err := OffHttp(); err != nil {
+		return err
+	}
+	if err := OffSocks(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func SetIgnore(ignores []string) error {
 	return set("ProxyOverride", "REG_SZ", strings.Join(ignores, ";"))
 }
@@ -209,7 +222,6 @@ func getAllProxy() (map[string]string, error) {
 		if len(n) == 1 {
 			proxy["http"] = item
 			proxy["https"] = item
-			proxy["ftp"] = item
 			proxy["socks"] = item
 			break
 		}

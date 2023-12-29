@@ -15,6 +15,19 @@ func init() {
 	log.Println("sysproxy use linux")
 }
 
+func OffAll() error {
+	if err := OffHttps(); err != nil {
+		return err
+	}
+	if err := OffHttp(); err != nil {
+		return err
+	}
+	if err := OffSocks(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func SetIgnore(ignores []string) error {
 	buf := bytes.NewBuffer(nil)
 	buf.WriteString("[ ")
