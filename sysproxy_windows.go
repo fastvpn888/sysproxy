@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"net/textproto"
 	"os/exec"
 	"sort"
@@ -14,6 +15,10 @@ import (
 	"strings"
 	"syscall"
 )
+
+func init() {
+	log.Println("sysprot use windows")
+}
 
 func SetIgnore(ignores []string) error {
 	return set("ProxyOverride", "REG_SZ", strings.Join(ignores, ";"))

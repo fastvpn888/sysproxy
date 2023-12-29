@@ -7,12 +7,17 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"net/textproto"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
 )
+
+func init() {
+	log.Println("sysprot use darwin")
+}
 
 func SetIgnore(ignores []string) error {
 	s, err := getNetworkInterface()

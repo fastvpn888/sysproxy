@@ -5,14 +5,15 @@ package sysproxy
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os/exec"
 	"strconv"
 	"strings"
 )
 
-const (
-	scheme = "org.gnome.system.proxy"
-)
+func init() {
+	log.Println("sysprot use linux")
+}
 
 func SetIgnore(ignores []string) error {
 	buf := bytes.NewBuffer(nil)
@@ -212,6 +213,8 @@ func GetSocks() (*Addr, error) {
 	}
 	return ParseAddrPtr(fmt.Sprintf("%s:%s", host, port)), nil
 }
+
+const scheme = "org.gnome.system.proxy"
 
 func reset(sub, key string) error {
 	scheme := scheme
