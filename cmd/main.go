@@ -1,0 +1,153 @@
+package main
+
+import (
+	"flag"
+	"fmt"
+	"net"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
+
+	"github.com/niubir/sysproxy"
+)
+
+var (
+	on  string
+	off string
+
+	serviceRegex = regexp.MustCompile(`(\w+)=([\d\.]+):(\d+)`)
+)
+
+type Service struct {
+	Original string
+	Protocol string
+	Addr     sysproxy.Addr
+}
+
+func init() {
+	flag.StringVar(&on, "on", "", "Turn on services in the format: http=host:port https=host:port socks=host:port")
+	flag.StringVar(&off, "off", "", "Turn off services: http https socks all")
+	flag.Parse()
+}
+
+func main() {
+	switch {
+	case on != "":
+		onFunc()
+	case off != "":
+		offFunc()
+	default:
+		flag.Usage()
+		os.Exit(1)
+		return
+	}
+}
+
+func onFunc() {
+	params := strings.Split(on, " ")
+	if len(params) == 0 {
+		fmt.Printf("Error: fail to on, no parameters.\n")
+		return
+	}
+
+	var services []Service
+	for _, s := range params {
+		matches := serviceRegex.FindStringSubmatch(s)
+		if matches == nil || len(matches) < 4 {
+			fmt.Printf("Warn: fail to on, invalid parameter(%s).\n", s)
+			continue
+		}
+		protocol := strings.ToUpper(matches[1])
+		if protocol != "HTTP" && protocol != "HTTPS" && protocol != "SOCKS" {
+			fmt.Printf("Warn: fail to on, invalid protocol(%s) [http https socks].\n", s)
+			continue
+		}
+		host := matches[2]
+		if net.ParseIP(host) == nil {
+			fmt.Printf("Warn: fail to on, invalid ip(%s).\n", s)
+			continue
+		}
+		port, err := strconv.Atoi(matches[3])
+		if err != nil || !(port > 0 && port <= 65535) {
+			fmt.Printf("Warn: fail to on, invalid port(%s).\n", s)
+			continue
+		}
+		services = append(services, Service{
+			Original: s,
+			Protocol: protocol,
+			Addr: sysproxy.Addr{
+				Host: host,
+				Port: port,
+			},
+		})
+	}
+	if len(services) == 0 {
+		fmt.Printf("Error: fail to on, no available parameters.\n")
+		return
+	}
+
+	for _, service := range services {
+		var err error
+		switch service.Protocol {
+		case "HTTP":
+			err = sysproxy.OnHttp(service.Addr)
+		case "HTTPS":
+			err = sysproxy.OnHttps(service.Addr)
+		case "SOCKS":
+			err = sysproxy.OnSocks(service.Addr)
+		}
+		if err != nil {
+			fmt.Printf("Warn: fail to on, reason(%s): %s.\n", service.Original, err.Error())
+		} else {
+			fmt.Printf("Info: success to on, %s.\n", service.Original)
+		}
+	}
+}
+
+func offFunc() {
+	params := strings.Split(off, " ")
+	if len(params) == 0 {
+		fmt.Printf("Error: fail to off, no parameters.\n")
+		return
+	}
+
+	var protocols []string
+	var containAll bool
+	for _, s := range params {
+		protocol := strings.ToUpper(s)
+		if protocol != "HTTP" && protocol != "HTTPS" && protocol != "SOCKS" && protocol != "ALL" {
+			fmt.Printf("Warn: fail to off, invalid protocol(%s) [http https socks].\n", s)
+			continue
+		}
+		if protocol == "ALL" {
+			containAll = true
+		}
+		protocols = append(protocols, protocol)
+	}
+
+	if containAll {
+		if err := sysproxy.OffAll(); err != nil {
+			fmt.Printf("Warn: fail to off, reason(all): %s.\n", err.Error())
+		} else {
+			fmt.Printf("Info: success to off, all.\n")
+		}
+		return
+	}
+	for _, protocol := range protocols {
+		var err error
+		switch protocol {
+		case "HTTP":
+			err = sysproxy.OffHttp()
+		case "HTTPS":
+			err = sysproxy.OffHttps()
+		case "SOCKS":
+			err = sysproxy.OffSocks()
+		}
+		if err != nil {
+			fmt.Printf("Warn: fail to off, reason(%s): %s.\n", protocol, err.Error())
+		} else {
+			fmt.Printf("Info: success to off %s.\n", protocol)
+		}
+	}
+}

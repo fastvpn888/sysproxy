@@ -1,0 +1,46 @@
+# publish.yml
+name: Publish
+on:
+  push:
+    tags:
+      - '*.*.*'
+jobs:
+  release:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.4'
+
+      - name: Install
+        run: |
+          go mod init
+          go mod tidy
+
+      - name: Build
+        working-directory: ./cmd
+        run: |
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o sysproxy-windows-amd64.exe main.go
+          CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o sysproxy-windows-arm64.exe main.go
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o sysproxy-linux-amd64 main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o sysproxy-linux-arm64 main.go
+
+          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o sysproxy-darwin-amd64 main.go
+          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o sysproxy-darwin-arm64 main.go
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            cmd/sysproxy-windows-amd64.exe
+            cmd/sysproxy-windows-arm64.exe
+            cmd/sysproxy-linux-amd64
+            cmd/sysproxy-linux-arm64
+            cmd/sysproxy-darwin-amd64
+            cmd/sysproxy-darwin-arm64
