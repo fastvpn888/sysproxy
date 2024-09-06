@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"net/textproto"
 	"os/exec"
 	"regexp"
@@ -16,7 +15,7 @@ import (
 )
 
 func init() {
-	log.Println("sysproxy use darwin")
+	fmt.Println("sysproxy use darwin")
 }
 
 func OffAll() error {

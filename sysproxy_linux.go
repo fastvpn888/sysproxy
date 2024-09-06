@@ -5,14 +5,13 @@ package sysproxy
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os/exec"
 	"strconv"
 	"strings"
 )
 
 func init() {
-	log.Println("sysproxy use linux")
+	fmt.Println("sysproxy use linux")
 }
 
 func OffAll() error {

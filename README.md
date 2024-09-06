@@ -6,7 +6,7 @@ Set the proxy of the system
 ```go
 package sysproxy
 
-import "log"
+import "fmt"
 
 func main() {
   // ON http
@@ -20,7 +20,7 @@ func main() {
 	if addr, err := GetHttp(); err != nil {
 		panic(err)
 	} else {
-		log.Println(addr)
+		fmt.Println(addr)
 	}
   // OFF http
 	defer OffHttp()
@@ -36,7 +36,7 @@ func main() {
   if addr, err := GetHttps(); err != nil {
 		panic(err)
 	} else {
-		log.Println(addr)
+		fmt.Println(addr)
 	}
   // OFF https
   defer OffHttps()
@@ -52,7 +52,7 @@ func main() {
   if addr, err := GetSocks(); err != nil {
 		panic(err)
 	} else {
-		log.Println(addr)
+		fmt.Println(addr)
 	}
   // OFF socks
   defer OffSocks()

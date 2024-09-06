@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"net/textproto"
 	"os/exec"
 	"sort"
@@ -17,7 +16,7 @@ import (
 )
 
 func init() {
-	log.Println("sysproxy use windows")
+	fmt.Println("sysproxy use windows")
 }
 
 func OffAll() error {
