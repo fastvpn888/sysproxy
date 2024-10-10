@@ -27,6 +27,9 @@ jobs:
           CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o sysproxy-windows-386.exe main.go
           CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o sysproxy-windows-amd64.exe main.go
           CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o sysproxy-windows-arm64.exe main.go
+          zip sysproxy-windows-386.zip sysproxy-windows-386.exe
+          zip sysproxy-windows-amd64.zip sysproxy-windows-amd64.exe
+          zip sysproxy-windows-arm64.zip sysproxy-windows-arm64.exe
 
       - name: Build Darwin
         working-directory: ./cmd
@@ -35,6 +38,8 @@ jobs:
           CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o sysproxy-darwin-arm64 main.go
           chmod +x sysproxy-darwin-amd64
           chmod +x sysproxy-darwin-arm64
+          tar -czf sysproxy-darwin-amd64.tar.gz sysproxy-darwin-amd64
+          tar -czf sysproxy-darwin-arm64.tar.gz sysproxy-darwin-arm64
 
       - name: Build Linux
         working-directory: ./cmd
@@ -56,21 +61,19 @@ jobs:
           chmod +x sysproxy-linux-riscv64
           chmod +x sysproxy-linux-s390x
 
+          tar -czf sysproxy-linux-386.tar.gz sysproxy-linux-386
+          tar -czf sysproxy-linux-amd64.tar.gz sysproxy-linux-amd64
+          tar -czf sysproxy-linux-arm64.tar.gz sysproxy-linux-arm64
+          tar -czf sysproxy-linux-armv6.tar.gz sysproxy-linux-armv6
+          tar -czf sysproxy-linux-armv7.tar.gz sysproxy-linux-armv7
+          tar -czf sysproxy-linux-mips64le.tar.gz sysproxy-linux-mips64le
+          tar -czf sysproxy-linux-riscv64.tar.gz sysproxy-linux-riscv64
+          tar -czf sysproxy-linux-s390x.tar.gz sysproxy-linux-s390x
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            cmd/sysproxy-windows-386.exe
-            cmd/sysproxy-windows-amd64.exe
-            cmd/sysproxy-windows-arm64.exe
-            cmd/sysproxy-darwin-amd64
-            cmd/sysproxy-darwin-arm64
-            cmd/sysproxy-linux-386
-            cmd/sysproxy-linux-amd64
-            cmd/sysproxy-linux-arm64
-            cmd/sysproxy-linux-armv6
-            cmd/sysproxy-linux-armv7
-            cmd/sysproxy-linux-mips64le
-            cmd/sysproxy-linux-riscv64
-            cmd/sysproxy-linux-s390x
+            *.zip
+            *.tar.gz
