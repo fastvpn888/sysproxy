@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	fmt.Println("sysproxy use linux")
+	// fmt.Println("sysproxy use linux")
 }
 
 func OffAll() error {

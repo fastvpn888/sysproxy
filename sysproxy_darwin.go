@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	fmt.Println("sysproxy use darwin")
+	// fmt.Println("sysproxy use darwin")
 }
 
 func OffAll() error {

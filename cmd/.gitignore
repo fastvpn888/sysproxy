@@ -1,6 +1,13 @@
+sysproxy-windows-386.exe
 sysproxy-windows-amd64.exe
 sysproxy-windows-arm64.exe
-sysproxy-linux-amd64
-sysproxy-linux-arm64
 sysproxy-darwin-amd64
 sysproxy-darwin-arm64
+sysproxy-linux-386
+sysproxy-linux-amd64
+sysproxy-linux-arm64
+sysproxy-linux-armv6
+sysproxy-linux-armv7
+sysproxy-linux-mips64le
+sysproxy-linux-riscv64
+sysproxy-linux-s390x

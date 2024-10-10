@@ -12,6 +12,8 @@ import (
 	"github.com/niubir/sysproxy"
 )
 
+const version = "1.0.2"
+
 var (
 	on  string
 	off string
@@ -26,6 +28,10 @@ type Service struct {
 }
 
 func init() {
+	flag.Usage = func() {
+		fmt.Println("sysproxy version", version)
+		flag.PrintDefaults()
+	}
 	flag.StringVar(&on, "on", "", "Turn on services in the format: http=host:port https=host:port socks=host:port")
 	flag.StringVar(&off, "off", "", "Turn off services: http https socks all")
 	flag.Parse()

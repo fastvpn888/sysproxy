@@ -21,26 +21,56 @@ jobs:
           go mod init github.com/niubir/sysproxy
           go mod tidy
 
-      - name: Build
+      - name: Build Windows
         working-directory: ./cmd
         run: |
+          CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o sysproxy-windows-386.exe main.go
           CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o sysproxy-windows-amd64.exe main.go
           CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o sysproxy-windows-arm64.exe main.go
 
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o sysproxy-linux-amd64 main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o sysproxy-linux-arm64 main.go
-
+      - name: Build Darwin
+        working-directory: ./cmd
+        run: |
           CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o sysproxy-darwin-amd64 main.go
           CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o sysproxy-darwin-arm64 main.go
+          chmod +x sysproxy-darwin-amd64
+          chmod +x sysproxy-darwin-arm64
+
+      - name: Build Linux
+        working-directory: ./cmd
+        run: |
+          CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -o sysproxy-linux-386 main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o sysproxy-linux-amd64 main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o sysproxy-linux-arm64 main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -o sysproxy-linux-armv6 main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 go build -o sysproxy-linux-armv7 main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=mips64le go build -o sysproxy-linux-mips64le main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=riscv64 go build -o sysproxy-linux-riscv64 main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=s390x go build -o sysproxy-linux-s390x main.go
+          chmod +x sysproxy-linux-386
+          chmod +x sysproxy-linux-amd64
+          chmod +x sysproxy-linux-arm64
+          chmod +x sysproxy-linux-armv6
+          chmod +x sysproxy-linux-armv7
+          chmod +x sysproxy-linux-mips64le
+          chmod +x sysproxy-linux-riscv64
+          chmod +x sysproxy-linux-s390x
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
+            cmd/sysproxy-windows-386.exe
             cmd/sysproxy-windows-amd64.exe
             cmd/sysproxy-windows-arm64.exe
-            cmd/sysproxy-linux-amd64
-            cmd/sysproxy-linux-arm64
             cmd/sysproxy-darwin-amd64
             cmd/sysproxy-darwin-arm64
+            cmd/sysproxy-linux-386
+            cmd/sysproxy-linux-amd64
+            cmd/sysproxy-linux-arm64
+            cmd/sysproxy-linux-armv6
+            cmd/sysproxy-linux-armv7
+            cmd/sysproxy-linux-mips64le
+            cmd/sysproxy-linux-riscv64
+            cmd/sysproxy-linux-s390x
