@@ -24,56 +24,65 @@ jobs:
       - name: Build Windows
         working-directory: ./cmd
         run: |
-          CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o sysproxy-windows-386.exe main.go
-          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o sysproxy-windows-amd64.exe main.go
-          CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o sysproxy-windows-arm64.exe main.go
-          zip sysproxy-windows-386.zip sysproxy-windows-386.exe
-          zip sysproxy-windows-amd64.zip sysproxy-windows-amd64.exe
-          zip sysproxy-windows-arm64.zip sysproxy-windows-arm64.exe
+          CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o sysproxy.exe main.go
+          zip sysproxy-windows-386.zip sysproxy.exe
+
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o sysproxy.exe main.go
+          zip sysproxy-windows-amd64.zip sysproxy.exe
+
+          CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -o sysproxy.exe main.go
+          zip sysproxy-windows-arm64.zip sysproxy.exe
 
       - name: Build Darwin
         working-directory: ./cmd
         run: |
-          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o sysproxy-darwin-amd64 main.go
-          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o sysproxy-darwin-arm64 main.go
-          chmod +x sysproxy-darwin-amd64
-          chmod +x sysproxy-darwin-arm64
-          tar -czf sysproxy-darwin-amd64.tar.gz sysproxy-darwin-amd64
-          tar -czf sysproxy-darwin-arm64.tar.gz sysproxy-darwin-arm64
+          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-darwin-amd64.tar.gz sysproxy
+
+          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-darwin-arm64.tar.gz sysproxy
 
       - name: Build Linux
         working-directory: ./cmd
         run: |
-          CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -o sysproxy-linux-386 main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o sysproxy-linux-amd64 main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o sysproxy-linux-arm64 main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -o sysproxy-linux-armv6 main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 go build -o sysproxy-linux-armv7 main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=mips64le go build -o sysproxy-linux-mips64le main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=riscv64 go build -o sysproxy-linux-riscv64 main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=s390x go build -o sysproxy-linux-s390x main.go
-          chmod +x sysproxy-linux-386
-          chmod +x sysproxy-linux-amd64
-          chmod +x sysproxy-linux-arm64
-          chmod +x sysproxy-linux-armv6
-          chmod +x sysproxy-linux-armv7
-          chmod +x sysproxy-linux-mips64le
-          chmod +x sysproxy-linux-riscv64
-          chmod +x sysproxy-linux-s390x
+          CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-386.tar.gz sysproxy
 
-          tar -czf sysproxy-linux-386.tar.gz sysproxy-linux-386
-          tar -czf sysproxy-linux-amd64.tar.gz sysproxy-linux-amd64
-          tar -czf sysproxy-linux-arm64.tar.gz sysproxy-linux-arm64
-          tar -czf sysproxy-linux-armv6.tar.gz sysproxy-linux-armv6
-          tar -czf sysproxy-linux-armv7.tar.gz sysproxy-linux-armv7
-          tar -czf sysproxy-linux-mips64le.tar.gz sysproxy-linux-mips64le
-          tar -czf sysproxy-linux-riscv64.tar.gz sysproxy-linux-riscv64
-          tar -czf sysproxy-linux-s390x.tar.gz sysproxy-linux-s390x
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-amd64.tar.gz sysproxy
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-arm64.tar.gz sysproxy
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-armv6.tar.gz sysproxy
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-armv7.tar.gz sysproxy
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=mips64le go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-mips64le.tar.gz sysproxy
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=riscv64 go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-riscv64.tar.gz sysproxy
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=s390x go build -o sysproxy main.go
+          chmod +x sysproxy
+          tar -czf sysproxy-linux-s390x.tar.gz sysproxy
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            *.zip
-            *.tar.gz
+            cmd/*.zip
+            cmd/*.tar.gz
