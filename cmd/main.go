@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"regexp"
 	"strconv"
 	"strings"
+	"syscall"
 
 	"github.com/niubir/sysproxy"
 )
@@ -15,8 +17,9 @@ import (
 const version = "1.0.4"
 
 var (
-	on  string
-	off string
+	on         string
+	off        string
+	listenQuit bool
 
 	serviceRegex = regexp.MustCompile(`(\w+)=([\d\.]+):(\d+)`)
 )
@@ -34,6 +37,7 @@ func init() {
 	}
 	flag.StringVar(&on, "on", "", "Turn on services in the format: http=host:port https=host:port socks=host:port")
 	flag.StringVar(&off, "off", "", "Turn off services: http https socks all")
+	flag.BoolVar(&listenQuit, "listen-quit", false, "Listen quit do off all")
 	flag.Parse()
 }
 
@@ -43,6 +47,8 @@ func main() {
 		onFunc()
 	case off != "":
 		offFunc()
+	case listenQuit:
+		listenQuitFunc()
 	default:
 		flag.Usage()
 		os.Exit(1)
@@ -155,5 +161,17 @@ func offFunc() {
 		} else {
 			fmt.Printf("Info: success to off %s.\n", protocol)
 		}
+	}
+}
+
+func listenQuitFunc() {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+
+	<-c
+	if err := sysproxy.OffAll(); err != nil {
+		fmt.Println("listen do off all failed:", err)
+	} else {
+		fmt.Println("listen do off all success")
 	}
 }
