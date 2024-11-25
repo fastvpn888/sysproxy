@@ -10,6 +10,17 @@ import (
 	"strings"
 )
 
+var (
+	DefaultIgnores = []string{
+		"localhost",
+		"127.0.0.1",
+		"192.168.0.0/16",
+		"10.0.0.0/8",
+		"172.16.0.0/12",
+		"::1",
+	}
+)
+
 func init() {
 	// fmt.Println("sysproxy use linux")
 }

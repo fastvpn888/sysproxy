@@ -14,11 +14,12 @@ import (
 	"github.com/niubir/sysproxy"
 )
 
-const version = "1.0.6"
+const version = "1.0.7"
 
 var (
 	on         string
 	off        string
+	setIgnore  bool
 	listenQuit bool
 
 	serviceRegex = regexp.MustCompile(`(\w+)=([\d\.]+):(\d+)`)
@@ -37,6 +38,7 @@ func init() {
 	}
 	flag.StringVar(&on, "on", "", "Turn on services in the format: http=host:port https=host:port socks=host:port")
 	flag.StringVar(&off, "off", "", "Turn off services: http https socks all")
+	flag.BoolVar(&setIgnore, "set-ignore", false, "Set default ignore")
 	flag.BoolVar(&listenQuit, "listen-quit", false, "Listen quit do off all")
 	flag.Parse()
 }
@@ -47,6 +49,8 @@ func main() {
 		onFunc()
 	case off != "":
 		offFunc()
+	case setIgnore:
+		setIgnoreFunc()
 	case listenQuit:
 		listenQuitFunc()
 	default:
@@ -161,6 +165,14 @@ func offFunc() {
 		} else {
 			fmt.Printf("Info: success to off %s.\n", protocol)
 		}
+	}
+}
+
+func setIgnoreFunc() {
+	if err := sysproxy.SetIgnore(sysproxy.DefaultIgnores); err != nil {
+		fmt.Printf("Warn: fail to set ignore, reason: %s.\n", err.Error())
+	} else {
+		fmt.Printf("Info: success to set ignore.\n")
 	}
 }
 
