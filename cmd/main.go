@@ -14,7 +14,7 @@ import (
 	"github.com/niubir/sysproxy"
 )
 
-const version = "1.0.7"
+const version = "1.0.8"
 
 var (
 	on         string

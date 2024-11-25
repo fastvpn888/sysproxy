@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 jobs:
   release:
     name: Publish
@@ -14,7 +14,7 @@ jobs:
       - name: Setup
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21.4'
+          go-version: "1.21.4"
 
       - name: Install
         run: |
@@ -99,3 +99,4 @@ jobs:
           files: |
             cmd/*.zip
             cmd/*.tar.gz
+            cmd/version.txt
